@@ -3,6 +3,9 @@
 #include <HTTPClient.h>
 #include <ESP32Servo.h>
 
+#define echoPin 19
+#define trigPin 18
+
 // 원본 아두이노 핀 번호
 Servo myservo1;
 Servo myservo2;
@@ -21,24 +24,14 @@ int prev_state = 0;
 const char* ssid = "DESKTOP-N75BSJP 8172";
 const char* password = "2@6A6o73";
 
-String serverName = "http://minimalist.iptime.org:14523/device/esp32board";
+String serverURL = "http://minimalist.iptime.org:14523/device/esp32board";
 
 unsigned long lastTime = 0;
 unsigned long timerDelay = 5000;
 
 void setup() {
   Serial.begin(115200); 
-  WiFi.begin(ssid, password);
-  Serial.println("Connecting");
-  while(WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.print("Connected to WiFi network with IP Address: ");
-  Serial.println(WiFi.localIP());
- 
-  Serial.println("Timer set to 5 seconds (timerDelay variable), it will take 5 seconds before publishing the first reading.");
+  wificonnect();
 }
 
 void loop() {
@@ -47,9 +40,9 @@ void loop() {
     if(WiFi.status()== WL_CONNECTED){
       HTTPClient http;
 
-      String serverPath = serverName + "?temperature=24.37";
+      // String serverPath = serverName + "?temperature=24.37";
       
-      http.begin(serverPath.c_str());
+      http.begin(serverURL.c_str());
       
       int httpResponseCode = http.GET();
       
@@ -57,6 +50,7 @@ void loop() {
         Serial.print("HTTP Response code: ");
         Serial.println(httpResponseCode);
         String payload = http.getString();
+        Serial.print("payload: ");
         Serial.println(payload);
       }
       else {
@@ -67,18 +61,21 @@ void loop() {
     }
     else {
       Serial.println("WiFi Disconnected");
-      WiFi.begin(ssid, password);
-    Serial.println("Connecting");
-    while(WiFi.status() != WL_CONNECTED) {
-      delay(500);
-      Serial.print(".");
-    }
-    Serial.println("");
-    Serial.print("Connected to WiFi network with IP Address: ");
-    Serial.println(WiFi.localIP());
-  
-    Serial.println("Timer set to 5 seconds (timerDelay variable), it will take 5 seconds before publishing the first reading.");
+      wificonnect();
     }
     lastTime = millis();
   }
 }
+
+void wificonnect(){
+  WiFi.begin(ssid, password);
+  Serial.println("Connecting");
+  while(WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.print("Connected to WiFi network with IP Address: ");
+  Serial.println(WiFi.localIP());
+}
+
