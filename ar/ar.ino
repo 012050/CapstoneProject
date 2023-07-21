@@ -25,27 +25,85 @@ const char* ssid = "DESKTOP-N75BSJP 8172";
 const char* password = "2@6A6o73";
 
 String serverURL = "http://minimalist.iptime.org:14523/device/esp32board";
+// String count = "0";
+int count = 0;
+String requestURL = "";
+int num;
 
 unsigned long lastTime = 0;
-unsigned long timerDelay = 5000;
+unsigned long timerDelay = 1000;
 
 void setup() {
   Serial.begin(115200); 
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(LED, OUTPUT);
+  pinMode(speaker, OUTPUT);
+  myservo1.attach(22);
+  myservo2.attach(23);
   wificonnect();
 }
 
 void loop() {
-  //Send an HTTP POST request every 10 minutes
+  // if (getdistance() <= 10){
+  //   if (!isWithinRange){
+  //     isWithinRange = true;
+  //     startTime = millis();
+  //   }
+  //   if (millis() - startTime >= 2000)
+  //   state = 1;
+  // }
+  // else {
+  //   isWithinRange = false;
+  //   state = 0;
+  // }
+
+  // if (prev_state == 0 and state == 1){
+  //   Serial.println(state);
+  //   c_Value = analogRead(cell);
+  //   digitalWrite(LED, HIGH); // LED를 켬
+  //   delay(1000);
+  //   digitalWrite(LED, LOW); 
+  // }
+  // else if (prev_state == 1 and state == 0)
+  //   Serial.println(state);
+
+  // prev_state = state;
+
+  // if (Serial.available()) {
+  //   result = Serial.read(); 
+  //   if(result =='1'){ 
+  //     //tone(speaker, 1000, 500); 
+  //     myservo1.write(0);
+  //     myservo2.write(180);
+  //     // delay (3000);
+  //     while (true){
+  //       if (getdistance() > 30) {
+  //         // delay(1000);
+  //         myservo1.write(80);
+  //         myservo2.write(100);
+  //         break;
+  //       }
+  //     }
+        
+  //   }
+
+  // }
+
+
+
   if ((millis() - lastTime) > timerDelay) {
     if(WiFi.status()== WL_CONNECTED){
       HTTPClient http;
+// -------------------------------------------------------------
 
-      // String serverPath = serverName + "?temperature=24.37";
-      
-      http.begin(serverURL.c_str());
-      
+      requestURL = serverURL + String(count);
+      count++;
+
+      http.begin(requestURL.c_str());
+
       int httpResponseCode = http.GET();
-      
+
       if (httpResponseCode>0) {
         Serial.print("HTTP Response code: ");
         Serial.println(httpResponseCode);
@@ -65,6 +123,7 @@ void loop() {
     }
     lastTime = millis();
   }
+  
 }
 
 void wificonnect(){
@@ -79,3 +138,16 @@ void wificonnect(){
   Serial.println(WiFi.localIP());
 }
 
+long getdistance(){
+  digitalWrite(trigPin, LOW); 
+  delayMicroseconds(2); 
+
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10); 
+
+  digitalWrite(trigPin, LOW);
+  duration = pulseIn(echoPin, HIGH);
+  distance = (duration / 2) / 29.1;
+  
+  return distance;
+}
