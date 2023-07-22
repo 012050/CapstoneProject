@@ -20,7 +20,7 @@ def save_img(file, name, img_dir="Images"):
 
 def read_img(board):
 	result = None
-	results = reader.readtext(f"Images/{board}")
+	results = reader.readtext(f"Images/{board}.jpg")
 	if results:
 		pattern1 = r'\d{2}[가-힣]\s\d{4}'
 		pattern2 = r'\d{3}[가-힣]\s\d{4}'
@@ -35,12 +35,16 @@ def read_img(board):
 				matched_text = str(match1.group())
 			else:
 				matched_text = str(match2.group())
-			print(matched_text)
+			# print(matched_text)
 		else:
 			print(text)
-		matched_text = matched_text.replace(" ", "")
+		try:
+			matched_text = matched_text.replace(" ", "")
+		except:
+			pass
 		if matched_text in test:
 			result = 1
 		else:
 			result = 0
+	print(matched_text)
 	return result
