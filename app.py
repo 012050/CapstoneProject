@@ -23,4 +23,4 @@ def upload_photo(board):
         print("[FAILED] Image Not Received")
         return "[FAILED] Image Not Received", 204
 
-    return str(result)
+    return str(result), 200
