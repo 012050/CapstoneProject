@@ -24,7 +24,7 @@ String serverPath = "/upload/boardid";  // Flask upload route
 
 const int serverPort = 14523;
 
-const int timerInterval = 20000;    // time (milliseconds) between each HTTP POST image
+const int timerInterval = 5000;    // time (milliseconds) between each HTTP POST image
 unsigned long previousMillis = 0;   // last time image was sent
 
 WiFiClient client;
@@ -106,8 +106,6 @@ void setup() {
     delay(1000);
     ESP.restart();
   }
-
-  sendPhoto(); 
 }
 
 void loop() {
