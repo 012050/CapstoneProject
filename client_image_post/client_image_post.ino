@@ -14,19 +14,14 @@
 #include "soc/soc.h"
 #include "soc/rtc_cntl_reg.h"
 #include "esp_camera.h"
+#include <ESP32Servo.h>
 
 const char* ssid = "DESKTOP-N75BSJP 8172";
 const char* password = "2@6A6o73";
 
 String serverName = "minimalist.iptime.org";   
-
 String serverPath = "/upload/boardid";  // Flask upload route
-
 const int serverPort = 14523;
-
-const int timerInterval = 5000;    // time (milliseconds) between each HTTP POST image
-unsigned long previousMillis = 0;   // last time image was sent
-
 WiFiClient client;
 
 // CAMERA_MODEL_AI_THINKER
@@ -48,8 +43,40 @@ WiFiClient client;
 #define HREF_GPIO_NUM     23
 #define PCLK_GPIO_NUM     22
 
+// 초음파
+#define echoPin 14
+#define trigPin 15
+long distance;
+long duration;
+
+// 서보 모터
+#define left_servo_pin 12
+#define right_servo_pin 13
+
+Servo leftservo;
+Servo rightservo;
+
+// 밝기
+int brightness = 0;
 
 void setup() {
+
+  // LED
+  pinMode(4, OUTPUT);
+
+  // TEST
+  digitalWrite(4, HIGH);
+  delay(1000);
+  digitalWrite(4, LOW);
+
+  // SERVO
+  leftservo.attach(left_servo_pin);
+  rightservo.attach(right_servo_pin);
+
+  // 초음파
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); 
   Serial.begin(115200);
 
@@ -109,14 +136,21 @@ void setup() {
 }
 
 void loop() {
-  unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= timerInterval) {
+  if (getdistance() < 10){
+    stand();
     sendPhoto();
-    previousMillis = currentMillis;
+  }
+  else{
+    sit();
+    sendPhoto();
   }
 }
 
 String sendPhoto() {
+
+  // LED ON
+  digitalWrite(4, HIGH);
+
   String getAll;
   String getBody;
 
@@ -143,7 +177,7 @@ String sendPhoto() {
     client.println("Content-Type: multipart/form-data; boundary=ESP32");
     client.println();
     client.print(head);
-  
+
     uint8_t *fbBuf = fb->buf;
     size_t fbLen = fb->len;
     for (size_t n=0; n<fbLen; n=n+1024) {
@@ -157,16 +191,19 @@ String sendPhoto() {
       }
     }
     client.print(tail);
-    
+
     esp_camera_fb_return(fb);
-    
+
+    // LED OFF
+    digitalWrite(4, LOW);
+
     int timoutTimer = 10000;
     long startTimer = millis();
     boolean state = false;
-    
+
     while ((startTimer + timoutTimer) > millis()) {
       Serial.print(".");
-      delay(100);      
+      delay(100);
       while (client.available()) {
         char c = client.read();
         if (c == '\n') {
@@ -188,4 +225,32 @@ String sendPhoto() {
     Serial.println(getBody);
   }
   return getBody;
+}
+
+long getdistance(){
+  digitalWrite(trigPin, LOW); 
+  delayMicroseconds(2); 
+
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10); 
+
+  digitalWrite(trigPin, LOW);
+  duration = pulseIn(echoPin, HIGH);
+  distance = (duration / 2) / 29.1;
+  
+  return distance;
+}
+
+void stand(){
+  leftservo.write(90);
+  rightservo.write(0);
+}
+
+void sit(){
+  leftservo.write(0);
+  rightservo.write(90);
+}
+
+void getbrightness(){
+  Serial.println("get brightness");
 }
