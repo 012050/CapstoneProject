@@ -44,7 +44,7 @@ const char* password = "2@6A6o73";
 String getAll;
 String getBody;
 String server_command;
-
+String check_command = "aa";
 String serverName = "minimalist.iptime.org";   
 String serverPath = "/upload/boardid";  // Flask upload route
 const int serverPort = 25565;
@@ -141,13 +141,13 @@ void setup() {
 
 void loop() {
   server_command = sendPhoto();
-  // Serial.println(server_command);
-  if (server_command == "a"){
-    stand();
+  Serial.println(server_command);
+  if (server_command == server_command){
+    servo1.write(0);
     digitalWrite(4, 1);
   }
   else {
-    sit();
+    servo1.write(90);
     digitalWrite(4, 0);
   }
 }
@@ -236,14 +236,6 @@ long getdistance(){
   distance = (duration / 2) / 29.1;
   
   return distance;
-}
-
-void stand(){
-  servo1.write(90);
-}
-
-void sit(){
-  servo1.write(0);
 }
 
 void getbrightness(){
