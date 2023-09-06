@@ -29,7 +29,7 @@ def upload_photo(board):
     # return str(result), 200
 
 @app.route('/test/<code>')
-def upload_photo(code):
+def motor_command(code):
     global test_code
     if code == "on":
         test_code = "hello world"
