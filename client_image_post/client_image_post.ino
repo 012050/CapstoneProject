@@ -44,7 +44,8 @@ const char* password = "2@6A6o73";
 String getAll;
 String getBody;
 String server_command;
-String check_command = "aa";
+String check_command = "\nstand";
+
 String serverName = "minimalist.iptime.org";   
 String serverPath = "/upload/boardid";  // Flask upload route
 const int serverPort = 25565;
