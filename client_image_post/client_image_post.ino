@@ -142,9 +142,7 @@ void setup() {
 // ---------------------------------------------------------------------
 void loop() {
   server_command = sendPhoto();
-  Serial.print("server code: ");
-  Serial.println(server_command);
-  if (server_command.equalsIgnoreCase(check_command)){
+  if (server_command == check_command){
     servo1.write(0);
     digitalWrite(4, 1);
   }
@@ -156,6 +154,9 @@ void loop() {
 
 // ---------------------------------------------------------------------
 String sendPhoto() {
+
+  getAll = "";
+  getBody = "";
 
   camera_fb_t * fb = NULL;
   fb = esp_camera_fb_get();
@@ -217,11 +218,9 @@ String sendPhoto() {
       if (getBody.length()>0) { break; }
     }
     client.stop();
-    // Serial.println(getBody);
   }
   else {
     getBody = "Connection to " + serverName +  " failed.";
-    Serial.println(getBody);
   }
   return getBody;
 }
