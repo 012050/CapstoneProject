@@ -1,9 +1,10 @@
 from flask import Flask, request
+
 from ImageProcess import *
 
 app = Flask(__name__)
 
-test_code = "hello world"
+test_code = "stand"
 
 # 사진을 저장할 폴더
 img_dir = "Images"
@@ -24,7 +25,7 @@ def upload_photo(board):
     else:
         print("[FAILED] Image Not Received")
         return "[FAILED] Image Not Received", 204
-
+    print(test_code)
     return str(test_code)
     # return str(result), 200
 
@@ -32,9 +33,9 @@ def upload_photo(board):
 def motor_command(code):
     global test_code
     if code == "on":
-        test_code = "hello world"
+        test_code = "stand"
     elif code == "off":
-        test_code = "bye world"
+        test_code = "sit"
 
     print(test_code)
     return str(test_code)
