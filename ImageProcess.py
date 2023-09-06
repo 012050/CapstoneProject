@@ -1,4 +1,9 @@
-import os, cv2, easyocr, re
+import os
+import re
+import time
+
+import cv2
+import easyocr
 import numpy as np
 
 test = [
@@ -49,3 +54,6 @@ def read_img(board):
 			result = 0
 	print(matched_text)
 	return result
+
+def now_time():
+    return time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
