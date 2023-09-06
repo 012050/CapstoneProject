@@ -138,11 +138,12 @@ void setup() {
     ESP.restart();
   }
 }
-
+// ---------------------------------------------------------------------
 void loop() {
   server_command = sendPhoto();
+  Serial.print("server code: ");
   Serial.println(server_command);
-  if (server_command == check_command){
+  if (server_command.equalsIgnoreCase(check_command)){
     servo1.write(0);
     digitalWrite(4, 1);
   }
@@ -152,6 +153,7 @@ void loop() {
   }
 }
 
+// ---------------------------------------------------------------------
 String sendPhoto() {
 
   camera_fb_t * fb = NULL;
