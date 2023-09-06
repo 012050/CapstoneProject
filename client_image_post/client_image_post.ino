@@ -70,9 +70,9 @@ void setup() {
   pinMode(4, OUTPUT);
 
   // TEST
-  analogWrite(4, 1);
+  digitalWrite(4, 1);
   delay(500);
-  analogWrite(4, 0);
+  digitalWrite(4, 0);
 
   // SERVO
   servo1.attach(servo_pin);
@@ -141,20 +141,18 @@ void setup() {
 
 void loop() {
   server_command = sendPhoto();
-  Serial.println(server_command);
-  if (server_command == "hello world"){
+  // Serial.println(server_command);
+  if (server_command == "a"){
     stand();
+    digitalWrite(4, 1);
   }
   else {
     sit();
+    digitalWrite(4, 0);
   }
-  delay(3000);
 }
 
 String sendPhoto() {
-
-  // LED ON
-  digitalWrite(4, HIGH);
 
   camera_fb_t * fb = NULL;
   fb = esp_camera_fb_get();
@@ -195,9 +193,6 @@ String sendPhoto() {
     client.print(tail);
 
     esp_camera_fb_return(fb);
-
-    // LED OFF
-    digitalWrite(4, LOW);
 
     int timoutTimer = 10000;
     long startTimer = millis();
