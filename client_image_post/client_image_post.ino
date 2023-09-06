@@ -41,9 +41,13 @@
 const char* ssid = "DESKTOP-N75BSJP 8172";
 const char* password = "2@6A6o73";
 
+String getAll;
+String getBody;
+String server_command;
+
 String serverName = "minimalist.iptime.org";   
 String serverPath = "/upload/boardid";  // Flask upload route
-const int serverPort = 14523;
+const int serverPort = 25565;
 WiFiClient client;
 
 // 초음파
@@ -53,11 +57,9 @@ long distance;
 long duration;
 
 // 서보 모터
-#define left_servo_pin 12
-#define right_servo_pin 13
+#define servo_pin 12
 
-Servo leftservo;
-Servo rightservo;
+Servo servo1;
 
 // 밝기
 int brightness = 0;
@@ -68,13 +70,12 @@ void setup() {
   pinMode(4, OUTPUT);
 
   // TEST
-  digitalWrite(4, HIGH);
-  delay(1000);
-  digitalWrite(4, LOW);
+  analogWrite(4, 1);
+  delay(500);
+  analogWrite(4, 0);
 
   // SERVO
-  leftservo.attach(left_servo_pin);
-  rightservo.attach(right_servo_pin);
+  servo1.attach(servo_pin);
 
   // 초음파
   pinMode(trigPin, OUTPUT);
@@ -139,23 +140,21 @@ void setup() {
 }
 
 void loop() {
-  if (getdistance() < 10){
+  server_command = sendPhoto();
+  Serial.println(server_command);
+  if (server_command == "hello world"){
     stand();
-    sendPhoto();
   }
-  else{
+  else {
     sit();
-    sendPhoto();
   }
+  delay(3000);
 }
 
 String sendPhoto() {
 
   // LED ON
   digitalWrite(4, HIGH);
-
-  String getAll;
-  String getBody;
 
   camera_fb_t * fb = NULL;
   fb = esp_camera_fb_get();
@@ -221,7 +220,7 @@ String sendPhoto() {
     }
     Serial.println();
     client.stop();
-    Serial.println(getBody);
+    // Serial.println(getBody);
   }
   else {
     getBody = "Connection to " + serverName +  " failed.";
@@ -245,13 +244,11 @@ long getdistance(){
 }
 
 void stand(){
-  leftservo.write(90);
-  rightservo.write(0);
+  servo1.write(90);
 }
 
 void sit(){
-  leftservo.write(0);
-  rightservo.write(90);
+  servo1.write(0);
 }
 
 void getbrightness(){
