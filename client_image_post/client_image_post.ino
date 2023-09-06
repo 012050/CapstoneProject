@@ -166,7 +166,7 @@ String sendPhoto() {
   }
 
   if (client.connect(serverName.c_str(), serverPort)) {
-    Serial.println("Connection successful!");    
+    Serial.println("\nConnection successful!");    
     String head = "--ESP32\r\nContent-Disposition: form-data; name=\"imageFile\"; filename=\"esp32-cam.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n";
     String tail = "\r\n--ESP32--\r\n";
 
@@ -216,7 +216,6 @@ String sendPhoto() {
       }
       if (getBody.length()>0) { break; }
     }
-    Serial.println();
     client.stop();
     // Serial.println(getBody);
   }
