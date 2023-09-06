@@ -142,7 +142,7 @@ void setup() {
 void loop() {
   server_command = sendPhoto();
   Serial.println(server_command);
-  if (server_command == server_command){
+  if (server_command == check_command){
     servo1.write(0);
     digitalWrite(4, 1);
   }
