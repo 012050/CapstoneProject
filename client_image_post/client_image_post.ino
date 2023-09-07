@@ -41,6 +41,8 @@
 const char* ssid = "DESKTOP-N75BSJP 8172";
 const char* password = "2@6A6o73";
 
+int check = 1;
+
 String getAll;
 String getBody;
 String server_command;
@@ -141,15 +143,23 @@ void setup() {
 }
 // ---------------------------------------------------------------------
 void loop() {
-  server_command = sendPhoto();
+  if (getdistance() < 5 && check == 1){
+    server_command = sendPhoto();
+    check = 0;
+  }
+
   if (server_command == check_command){
     servo1.write(0);
     digitalWrite(4, 1);
+    delay(1000);
+    check = 1;
   }
   else {
     servo1.write(90);
     digitalWrite(4, 0);
+    delay(1000);
   }
+  server_command = "empty";
 }
 
 // ---------------------------------------------------------------------
