@@ -18,6 +18,7 @@ def upload_photo(board):
     result = 0
     if received.files:
         file  = received.files['imageFile']
+        board = str(str(board + now_time()))
         save_img(file, board, img_dir=app.config['UPLOAD_FOLDER'])
         result = read_img(board)
         print(f"[SUCCESS] Image Received, result: {result}")
