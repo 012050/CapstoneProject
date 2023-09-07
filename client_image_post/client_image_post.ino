@@ -41,7 +41,7 @@
 const char* ssid = "DESKTOP-N75BSJP 8172";
 const char* password = "2@6A6o73";
 
-int check = 1;
+int num_count = 1;
 
 String getAll;
 String getBody;
@@ -66,16 +66,18 @@ Servo servo1;
 
 // 밝기
 int brightness = 0;
+int bright_sen_pin = 13;
 
 void setup() {
 
   // LED
   pinMode(4, OUTPUT);
-
-  // TEST
   digitalWrite(4, 1);
-  delay(500);
+  delay(100);
   digitalWrite(4, 0);
+
+  // bright sensor
+  pinMode(bright_sen_pin, INPUT);
 
   // SERVO
   servo1.attach(servo_pin);
@@ -143,16 +145,16 @@ void setup() {
 }
 // ---------------------------------------------------------------------
 void loop() {
-  if (getdistance() < 5 && check == 1){
+  if (getdistance() < 5 && num_count == 1){
     server_command = sendPhoto();
-    check = 0;
+    num_count = 0;
   }
 
   if (server_command == check_command){
     servo1.write(0);
     digitalWrite(4, 1);
     delay(1000);
-    check = 1;
+    num_count = 1;
   }
   else {
     servo1.write(90);
@@ -249,6 +251,6 @@ long getdistance(){
   return distance;
 }
 
-void getbrightness(){
-  Serial.println("get brightness");
+int getbrightness(){
+  return analogRead(bright_sen_pin);
 }
