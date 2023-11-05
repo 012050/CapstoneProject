@@ -36,10 +36,12 @@
 // #define PCLK_GPIO_NUM     22
 
 #define CAMERA_MODEL_AI_THINKER
+#define WIFI_INFO
 #include "camera_pins.h"
+#include "wifi_info.h"
 
-const char* ssid = "DESKTOP-N75BSJP 8172";
-const char* password = "2@6A6o73";
+const char* ssid =     WIFI_ID_INFO;
+const char* password = WIFI_PW_INFO;
 
 int num_count = 1;
 
@@ -48,9 +50,9 @@ String getBody;
 String server_command;
 String check_command = "\nstand";
 
-String serverName = "minimalist.iptime.org";   
+String serverName = SERVER_ADDRESS;   
 String serverPath = "/upload/boardid";  // Flask upload route
-const int serverPort = 25565;
+const int serverPort = SERVER_PORT;
 WiFiClient client;
 
 // 초음파
